@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高考收官 · 前程似锦祝福站</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif;}
+        body{
+            min-height:100vh;
+            background: linear-gradient(135deg,#70a1ff,#a8e6cf,#ffd3b6);
+            overflow-x:hidden;
+            position:relative;
+        }
+        /* 气球飘落容器 */
+        .balloon-box{
+            position:fixed;
+            width:100%;
+            height:100%;
+            top:0;left:0;
+            pointer-events:none;
+            z-index:1;
+        }
+        .container{
+            position:relative;
+            z-index:2;
+            max-width:1200px;
+            margin:0 auto;
+            padding:40px 20px;
+            text-align:center;
+        }
+        .title{
+            font-size:clamp(2rem,5vw,3.5rem);
+            color:#fff;
+            text-shadow:2px 3px 8px rgba(0,0,0,0.2);
+            margin-bottom:20px;
+            padding-top:30px;
+        }
+        .sub-title{
+            font-size:clamp(1rem,2vw,1.3rem);
+            color:#ffffffdd;
+            margin-bottom:40px;
+        }
+        /* 祝福语轮播卡片 */
+        .bless-card{
+            background:rgba(255,255,255,0.85);
+            border-radius:20px;
+            padding:35px 25px;
+            max-width:700px;
+            margin:0 auto 40px;
+            box-shadow:0 8px 32px rgba(31,38,135,0.15);
+            backdrop-filter:blur(8px);
+            min-height:180px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        .bless-text{
+            font-size:clamp(1.1rem,2vw,1.4rem);
+            color:#2d3436;
+            line-height:1.8;
+            transition:all 0.6s ease;
+        }
+        /* 寄语列表 */
+        .msg-wrap{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+            gap:25px;
+            margin:50px 0;
+        }
+        .msg-item{
+            background:rgba(255,255,255,0.78);
+            padding:25px 20px;
+            border-radius:16px;
+            box-shadow:0 5px 18px #00000012;
+            transition:transform 0.3s;
+        }
+        .msg-item:hover{transform:translateY(-8px);}
+        .msg-item h4{color:#3498db;margin-bottom:12px;font-size:18px;}
+        .msg-item p{color:#555;line-height:1.7;font-size:15px;}
+        .footer{
+            margin-top:60px;
+            color:#fff;
+            font-size:15px;
+            opacity:0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- 气球动画层 -->
+    <div class="balloon-box" id="balloonBox"></div>
+    <div class="container">
+        <h1 class="title">高考圆满收官 · 奔赴滚烫人生</h1>
+        <p class="sub-title">放下笔杆，告别寒窗，从此山海辽阔，前路闪闪发光</p>
+
+        <!-- 轮播祝福语 -->
+        <div class="bless-card">
+            <p class="bless-text" id="blessTxt"></p>
+        </div>
+
+        <!-- 祝福卡片组 -->
+        <div class="msg-wrap">
+            <div class="msg-item">
+                <h4><a href="xinjian.html">致小锢</a></h4>
+                <p>十二年寒窗落笔收官，所有日夜伏案的努力，都将化作录取通知书上的荣光。</p>
+            </div>
+            <div class="msg-item">
+                <h4>前程祝愿</h4>
+                <p>愿金榜题名，如愿择校，去往心之所向的城市，遇见更好的自己。</p>
+            </div>
+            <div class="msg-item">
+                <h4>假期快乐</h4>
+                <p>卸下压力，好好旅行、陪伴家人，享受独属于你的悠长盛夏。</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            ✨ 祝小锢：旗开得胜，未来可期 ✨
+        </div>
+    </div>
+
+    <script>
+        // 轮播祝福语数组
+        const blessList = [
+            "笔锋所至，梦想开花，高考落幕，新程开启！",
+            "历尽千帆，得偿所愿，金榜题名，万事顺意！",
+            "从此跃入人海，各有风雨灿烂，未来一路繁花！",
+            "不负日夜苦读，不负年少理想，奔赴下一程山海！",
+            "盛夏启程，以梦为马，未来的日子闪闪发光！"
+        ];
+        let index = 0;
+        const blessDom = document.getElementById('blessTxt');
+        // 自动轮换文案
+        function changeText(){
+            blessDom.innerText = blessList[index];
+            index = (index+1)%blessList.length;
+        }
+        changeText();
+        setInterval(changeText,4000);
+
+        // 生成飘落气球
+        const balloonBox = document.getElementById('balloonBox');
+        const balloonColors = ['#ff6b6b','#4ecdc4','#ffe66d','#ff8fab','#60a5fa'];
+        function createBalloon(){
+            const balloon = document.createElement('div');
+            const size = Math.random()*30+20;
+            const color = balloonColors[Math.floor(Math.random()*balloonColors.length)];
+            balloon.style.cssText = `
+                width:${size}px;height:${size*1.3}px;
+                background:${color};
+                border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+                position:absolute;
+                left:${Math.random()*100}%;
+                bottom:-10%;
+                opacity:${Math.random()*0.4+0.6};
+            `;
+            balloonBox.appendChild(balloon);
+            // 上升动画
+            const speed = Math.random()*6000+7000;
+            balloon.animate([
+                {transform:'translateY(0)'},
+                {transform:`translateY(-${window.innerHeight+100}px)`}
+            ],{duration:speed,easing:'linear'});
+            // 动画结束删除元素
+            setTimeout(()=>balloon.remove(),speed);
+        }
+        // 持续生成气球
+        setInterval(createBalloon,350);
+    </script>
+</body>
+</html>
