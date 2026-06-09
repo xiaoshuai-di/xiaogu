@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>手写信笺 · 完整可见</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>手写信笺 · 致小锢</title>
     <style>
         * {
             margin: 0;
@@ -18,125 +18,127 @@
             align-items: center;
             background: #f2e8da;
             font-family: 'Segoe UI', 'Microsoft YaHei', '华文楷书', 'KaiTi', 'Georgia', serif;
-            padding: 24px;
+            padding: 20px 16px;
         }
 
-        /* 信封容器 */
+        /* 信封容器 — 移除固定高度，改为由内容自然撑开，彻底避免切字问题 */
         .envelope {
             position: relative;
-            width: 840px;
-            height: 560px;
+            width: 100%;
+            max-width: 600px;
             background: #ebddcf;
-            border-radius: 18px;
-            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255,255,240,0.5);
-            overflow: hidden;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255,255,240,0.5);
             border: 1px solid rgba(170, 130, 90, 0.3);
+            margin: 0 auto;
+            /* 关键：为信封盖和信件提供相对定位，但没有固定高度限制 */
         }
 
-        /* 信封上盖（三角形盖） */
+        /* 信封上盖（三角形信封盖） - 动画优雅 */
         .envelope__top {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 280px;
+            height: 240px; /* 固定一个合理高度即可，不影响信件区域溢出 */
             background: #dac09e;
             clip-path: polygon(0 0, 100% 0, 50% 100%);
             transform-origin: top center;
-            animation: openTop 2.2s ease-in-out forwards;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+            animation: openTop 1.6s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             z-index: 12;
-            background-image: repeating-linear-gradient(45deg, rgba(210,180,130,0.1) 0px, rgba(210,180,130,0.1) 2px, transparent 2px, transparent 8px);
+            background-image: repeating-linear-gradient(45deg, rgba(210,180,130,0.15) 0px, rgba(210,180,130,0.15) 2px, transparent 2px, transparent 8px);
+            pointer-events: none;
         }
 
-        /* 信件主体 — 完整显示所有文字 */
+        /* 信件主体 — 移动端优化：不再依赖bottom定位造成的隐藏风险 */
         .letter {
-            position: absolute;
-            left: 50%;
-            bottom: 0;
-            transform: translateX(-50%) translateY(100%);
-            width: 720px;
-            min-height: 480px;
-            max-height: 520px;
-            background-color: #fff4e4;
-            padding: 42px 58px 48px 58px;
-            border-radius: 6px 6px 14px 14px;
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255,255,210,0.9);
-            /* 关键修复：动画最终位置改为 -12%，让信件只向上弹出一小段，标题完全可见 */
-            animation: letterShow 2.1s 1s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+            position: relative;  /* 改为相对定位，让信件自然占据高度 */
+            width: calc(100% - 32px);
+            max-width: 560px;
+            margin: 0 auto;
+            background-color: #fffef7;
+            padding: 32px 28px 42px 28px;
+            border-radius: 24px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255,255,210,0.8);
             background-image: repeating-linear-gradient(
                 to bottom,
-                #ddc7a8 0px,
-                #ddc7a8 1px,
+                #f0e2ce 0px,
+                #f0e2ce 1px,
                 transparent 1px,
-                transparent 38px
-            ), radial-gradient(circle at 20% 35%, rgba(190, 150, 100, 0.08) 2%, transparent 2.5%);
-            background-size: 100% 38px, 32px 32px;
+                transparent 42px
+            ), radial-gradient(circle at 20% 35%, rgba(170, 130, 80, 0.06) 2.2%, transparent 2.8%);
+            background-size: 100% 42px, 36px 36px;
             background-blend-mode: normal;
-            border: 1px solid #edd7b5;
+            border: 1px solid #f2e2cb;
             overflow-y: auto;
             scrollbar-width: thin;
+            max-height: 70vh;
+            backdrop-filter: blur(0px);
+            /* 动画移动 (无bottom裁剪风险) 原来的位置稍向下，动画使其自然向上出现 */
+            transform: translateY(60px);
+            opacity: 0;
+            animation: letterRise 2s 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
         }
 
+        /* 滚动条美观 */
         .letter::-webkit-scrollbar {
-            width: 6px;
-            background: #eedbba;
-            border-radius: 10px;
+            width: 4px;
+            background: #eadbc8;
+            border-radius: 20px;
         }
         .letter::-webkit-scrollbar-thumb {
-            background: #c2a073;
-            border-radius: 10px;
+            background: #bb9875;
+            border-radius: 20px;
         }
 
-        /* 标题样式 - 确保可见 */
+        /* 标题样式 — 确保完整可见，不加任何裁剪 */
         .letter h4 {
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 600;
             color: #6b3f1f;
-            margin-bottom: 28px;
+            margin-bottom: 20px;
             margin-top: 0;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             font-family: 'Georgia', 'KaiTi', '华文楷书', cursive;
             display: inline-block;
             background: transparent;
-            text-shadow: 2px 2px 0 rgba(230,200,150,0.3);
-            border-bottom: 2px dashed #dbb87c;
-            padding-bottom: 8px;
+            text-shadow: 1px 1px 0 rgba(210,170,110,0.2);
+            border-bottom: 2px solid #e6caa3;
+            padding-bottom: 6px;
+            width: auto;
+            line-height: 1.3;
         }
 
+        /* 正文字体清晰 */
         .letter p {
-            font-size: 23px;
-            line-height: 38px;
-            color: #3e2c1c;
-            margin-bottom: 26px;
+            font-size: 17px;
+            line-height: 1.65;
+            color: #3a2a1c;
+            margin-bottom: 1.2rem;
             font-weight: 450;
             text-align: justify;
-            letter-spacing: 0.3px;
-            font-family: 'Segoe UI', 'KaiTi', '华文楷书', 'Roboto', serif;
-            background: transparent;
+            letter-spacing: 0.02em;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'KaiTi', '华文楷书', 'Roboto', serif;
             text-indent: 2em;
         }
 
-        .letter p:last-of-type {
-            margin-bottom: 0;
-        }
-
-        /* 首字下沉 */
+        /* 首字下沉效果 — 移动端适配 */
         .letter p:first-of-type::first-letter {
-            font-size: 42px;
+            font-size: 38px;
             font-weight: 600;
             color: #8b5a2b;
             float: left;
             margin-right: 8px;
-            line-height: 1;
+            line-height: 0.9;
             font-family: 'Georgia', serif;
         }
 
-        /* 移除所有三角装饰 */
+        /* 移除信封多余伪元素 */
         .envelope::before,
         .envelope::after {
-            content: none !important;
-            display: none !important;
+            content: none;
+            display: none;
         }
 
         /* 开盖动画 */
@@ -149,94 +151,179 @@
             }
         }
 
-        /* 信件弹出动画 —— 最终只向上移动8%，让标题完全露出来 */
-        @keyframes letterShow {
+        /* 信件优雅上升动画 — 从底部稍微抬起，标题完全显示在信封区域内 */
+        @keyframes letterRise {
             0% {
-                transform: translateX(-50%) translateY(100%);
+                transform: translateY(80px);
                 opacity: 0;
             }
             40% {
-                opacity: 0.8;
+                opacity: 0.9;
             }
             100% {
-                /* 只向上弹起一小段，确保标题“致小锢”在信封可视区域内完整显示 */
-                transform: translateX(-50%) translateY(-8%);
+                transform: translateY(0px);
                 opacity: 1;
             }
         }
 
+        /* 悬停效果只对非触屏，移动端不影响 */
         .letter:hover {
-            box-shadow: 0 18px 32px rgba(0, 0, 0, 0.2);
-            transition: box-shadow 0.25s ease;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+            transition: box-shadow 0.2s ease;
         }
 
-        /* 落款装饰 */
+        /* 落款样式 */
         .letter-footer {
             text-align: right;
             margin-top: 28px;
-            font-size: 16px;
-            color: #b88d62;
-            font-style: italic;
-            letter-spacing: 2px;
+            font-size: 14px;
+            color: #b28456;
+            font-style: normal;
+            letter-spacing: 1px;
             background: transparent;
-            opacity: 0.75;
+            opacity: 0.85;
             font-family: 'KaiTi', cursive;
             padding-top: 8px;
-            border-top: 1px dashed #e2caa8;
+            border-top: 1px solid #f0deca;
         }
 
-        @media (max-width: 920px) {
-            .envelope {
-                transform: scale(0.85);
-                transform-origin: center;
-            }
+        /* 移动端（宽度小于640）精细调整，确保标题完整 */
+        @media (max-width: 640px) {
             body {
-                padding: 16px;
+                padding: 24px 12px;
+                align-items: flex-start;
             }
-        }
-
-        @media (max-width: 760px) {
             .envelope {
-                transform: scale(0.7);
+                border-radius: 28px;
+            }
+            .letter {
+                width: calc(100% - 24px);
+                padding: 28px 20px 36px 20px;
+                max-height: 74vh;
+                background-size: 100% 42px, 30px 30px;
+                transform: translateY(60px);
             }
             .letter h4 {
                 font-size: 28px;
+                margin-bottom: 18px;
+                letter-spacing: 1px;
+                display: block;
+                width: fit-content;
             }
             .letter p {
-                font-size: 20px;
-                line-height: 34px;
+                font-size: 16px;
+                line-height: 1.65;
+                margin-bottom: 1rem;
+                text-indent: 2em;
             }
-            .letter {
-                padding: 32px 36px 40px 36px;
-                background-size: 100% 34px, 28px 28px;
+            .letter p:first-of-type::first-letter {
+                font-size: 34px;
+                line-height: 0.85;
+                margin-right: 6px;
             }
-            .letter {
-                background-image: repeating-linear-gradient(
-                    to bottom,
-                    #ddc7a8 0px,
-                    #ddc7a8 1px,
-                    transparent 1px,
-                    transparent 34px
-                ), radial-gradient(circle at 20% 35%, rgba(190, 150, 100, 0.08) 2%, transparent 2.5%);
-            }
-            @keyframes letterShow {
+            @keyframes letterRise {
                 0% {
-                    transform: translateX(-50%) translateY(100%);
+                    transform: translateY(70px);
                     opacity: 0;
                 }
                 100% {
-                    transform: translateX(-50%) translateY(-6%);
+                    transform: translateY(0px);
                     opacity: 1;
                 }
             }
             .letter-footer {
-                font-size: 13px;
+                font-size: 12px;
+                margin-top: 22px;
             }
         }
 
+        /* 对于很小的手机 (宽度 ≤ 480)，进一步微调 */
+        @media (max-width: 480px) {
+            .letter {
+                padding: 24px 18px 32px 18px;
+                width: calc(100% - 20px);
+            }
+            .letter h4 {
+                font-size: 26px;
+                margin-bottom: 14px;
+            }
+            .letter p {
+                font-size: 15px;
+                line-height: 1.6;
+            }
+            .letter p:first-of-type::first-letter {
+                font-size: 30px;
+            }
+            .envelope__top {
+                height: 200px;
+            }
+            @keyframes letterRise {
+                0% {
+                    transform: translateY(60px);
+                    opacity: 0;
+                }
+                100% {
+                    transform: translateY(0px);
+                    opacity: 1;
+                }
+            }
+        }
+
+        /* 大屏手机/小平板 舒适优化 */
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .envelope {
+                max-width: 680px;
+            }
+            .letter {
+                max-width: 620px;
+                padding: 42px 48px 48px 48px;
+                max-height: 70vh;
+            }
+            .letter h4 {
+                font-size: 36px;
+            }
+            .letter p {
+                font-size: 18px;
+                line-height: 1.7;
+            }
+        }
+
+        /* 辅助滚动优化 */
         .letter {
             display: flex;
             flex-direction: column;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* 信纸背景和文字保持柔和 */
+        .letter p strong, .letter em {
+            color: #9b6e42;
+        }
+
+        /* 保证开盖后信封区域无额外遮挡 */
+        .envelope {
+            background: #ebddcf;
+            transition: all 0.2s;
+            overflow: visible;  /* 重要：防止信件阴影被裁剪，同时保证h4完全可见 */
+        }
+        
+        /* 信封盖旋转后，信件区域没有任何遮盖风险 */
+        .envelope__top {
+            z-index: 2;
+        }
+
+        /* 确保信件在信封盖打开后完全可见 (相对位置) */
+        .letter {
+            position: relative;
+            z-index: 5;
+            margin-top: 20px;
+            margin-bottom: 28px;
+        }
+        
+        /* 信封底部装饰柔和，让卡片更立体 */
+        .envelope {
+            padding-bottom: 8px;
         }
     </style>
 </head>
@@ -245,11 +332,11 @@
         <div class="envelope__top"></div>
         <div class="letter">
             <h4>致小锢</h4>
-            <p>恭喜小锢，完成了人生最重要的主线任务，接下来你也是一名准大一新生啦！一转眼过去了六七年啦，不知不觉我居然陪你度过了人生最重要的三场考试，小升初，中考，高考，时间真的很快啊。接下来的路更需要你自己走，算下来，你也该成年啦。十八岁，人最重要的一步。上了大学，我相信你肯定会更努力去完成你的梦想。</p>
+            <p>恭喜小锢，完成了人生最重要的主线任务，接下来你也是一名准大一新生啦！一转眼过去了六七年啦，不知不觉我居然陪你度过了人生最重要的三场考试，小升初，中考，高考，时间真的很快啊。接下来的路更需要你自己走，算下来，你也该成年啦。十八岁，人生最重要的一步。上了大学，我相信你肯定会更努力去完成你的梦想。</p>
             <p>十二年寒窗落笔收官，所有日夜伏案的努力，都将化作录取通知书上的荣光。</p>
             <p>愿金榜题名，如愿择校，去往心之所向的城市，遇见更好的自己。前路浩浩荡荡，万物皆可期待，带着少年意气继续奔赴下一场山海吧！</p>
             <p>无论去往哪座城市，都愿你永远葆有此刻的热望与真诚。大学会是更广阔的旷野，去读书，去经历，去爱，去成为自己想成为的模样。记得常联系，我会一直在这里为你喝彩。</p>
-	    <p>你上大学后我们的联系就更便捷啦，请记住，无论何时，去往哪里，发生什么事情，哥哥永远在你身后。</p>
+            <p>你上大学后我们的联系就更便捷啦，请记住，无论何时，去往哪里，发生什么事情，哥哥永远在你身后。</p>
             <div class="letter-footer">✧ 纸短情长，未来可期 ✧</div>
         </div>
     </div>
